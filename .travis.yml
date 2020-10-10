@@ -1,0 +1,15 @@
+#Any time we use docker, we will require super user permissions.
+sudo: required
+
+#Travis CI will install a copy of docker into our running container
+services:
+  - docker
+
+#This section will contain a series of commands which get executed our tests
+before_install:
+  # We will tag the image to bypass ids.
+  - docker build -t abhinabroy/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run abhinabroy/docker-react npm run test -- --coverage
+
