@@ -14,3 +14,25 @@ before_install:
 script:
   - docker run -e CI=true abhinabroy/docker-react npm run test -- --coverage
 
+deploy:
+  # Travis CI comes pre-configured to deploy our application to a handful of hosting
+  # providers.
+  provider: elasticbeanstalk
+  region: "us-east-2"
+  app: "docker-react"
+  env: "DockerReact-env"
+  # Travis will take all the files in the codebase zip it and copy the file to a S3
+  # bucket. Which is essentially a hard-drive running on AWS. The S3 bucket is
+  # automatically generated when you created the EBS instance.
+  bucket_name: "elasticbeanstalk-us-east-2-555129766102"
+  # The S3 bucket is reused for all of the different environments that we create.
+  # We are looking for the folder which is the name of our project.
+  # When we first create our EBS instance chances are it is not going to create a folder
+  # by default. That folder is created automatically the first time we do a deploy.
+  # By defult the bucket path will be exactly equal to the app-name.
+  bucket_path: "docker-react"
+  # We only want to deploy the application when the master branch gets some new code.
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
